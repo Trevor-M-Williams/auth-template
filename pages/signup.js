@@ -1,8 +1,31 @@
 import { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { useRouter } from "next/router";
 const provider = new GoogleAuthProvider();
+
+function getFriendlyErrorMessage(error) {
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      return "This email is already in use by another account.";
+    case "auth/invalid-email":
+      return "Please enter a valid email.";
+    case "auth/user-disabled":
+      return "This account has been disabled.";
+    case "auth/user-not-found":
+      return "There is no user corresponding to this email.";
+    case "auth/wrong-password":
+      return "Wrong password.";
+    case "auth/too-many-requests":
+      return "Too many unsuccessful login attempts. Please try again later.";
+    default:
+      return error.message;
+  }
+}
 
 function SignUp() {
   const [email, setEmail] = useState("");
@@ -18,7 +41,8 @@ function SignUp() {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/");
     } catch (error) {
-      setError(error.message);
+      const friendlyErrorMessage = getFriendlyErrorMessage(error);
+      setError(friendlyErrorMessage);
     }
   };
 
@@ -27,7 +51,7 @@ function SignUp() {
       await signInWithPopup(auth, provider);
       router.push("/");
     } catch (error) {
-      console.log(error.message);
+      setError(error.message);
     }
   };
 
