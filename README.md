@@ -32,7 +32,45 @@ You need to setup Firebase in the Firebase console and add your Firebase project
 4. Under the "General" tab, scroll down to "Your apps" and click on the "</>" icon to register a new web app.
 5. Once the app is registered, you'll be given an object containing your Firebase configuration.
 
-Copy the configuration object and replace the dummy configuration in `firebase.js` file with your own configuration:
+### Environment Variables
+
+The Firebase configuration object should be stored as environment variables. This ensures that sensitive credentials are not pushed to the Git repository. Next.js allows us to load environment variables from a `.env.local` file.
+
+To set this up:
+
+1. Create a new file in the root directory of your project named `.env.local`.
+
+2. Inside this file, you can set the Firebase configuration object as environment variables:
+
+```plaintext
+NEXT_PUBLIC_Firebase_API_Key=your_api_key
+NEXT_PUBLIC_Auth_Domain=your_auth_domain
+NEXT_PUBLIC_Project_Id=your_project_id
+NEXT_PUBLIC_Storage_Bucket=your_storage_bucket
+NEXT_PUBLIC_Message_Sender_Id=your_messaging_sender_id
+NEXT_PUBLIC_App_Id=your_app_id
+```
+
+Replace `your_api_key`, `your_auth_domain`, etc with your actual Firebase configuration values. Make sure not to have quotes around these values and no spaces around the equals sign.
+
+3. After setting these environment variables, you can access them in your application code using `process.env`:
+
+```javascript
+const config = {
+  apiKey: process.env.NEXT_PUBLIC_Firebase_API_Key,
+  authDomain: process.env.NEXT_PUBLIC_Auth_Domain,
+  projectId: process.env.NEXT_PUBLIC_Project_Id,
+  storageBucket: process.env.NEXT_PUBLIC_Storage_Bucket,
+  messagingSenderId: process.env.NEXT_PUBLIC_Message_Sender_Id,
+  appId: process.env.NEXT_PUBLIC_App_Id,
+};
+```
+
+> Note: You need to restart your development server after setting these environment variables.
+
+> Important: Be sure to add `.env.local` to your `.gitignore` file so it is not committed to Git. This file typically contains sensitive information and should not be shared.
+
+This setup allows us to keep sensitive information out of our code. This is especially important when working on open source projects or when working with a team.
 
 ```javascript
 const config = {
